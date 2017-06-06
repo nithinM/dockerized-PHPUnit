@@ -31,6 +31,12 @@ RUN docker-php-ext-install mysqli \
 # Install the PHP pdo_pgsql extention
 RUN docker-php-ext-install pdo_pgsql
 
+# Install the Xdebug
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+COPY ./xdebug.ini /usr/local/etc/php/conf.d/
+
 #####################################
 # gd:
 #####################################
