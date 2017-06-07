@@ -82,3 +82,53 @@ vendor/bin/phpunit
 vendor/bin/phpunit --coverage-html coverage
 ```
 
+######Basic unit test
+- Should always have to mirror structure of the source code in side the `Test` folder.
+- For this example we use the `src/Validation/Validator.php`. So create a folder `Validation` in side the `Test` folder.
+Then create a php class file `ValidatorTest.php` (Test word required otherwise PHPUnit ignore it).
+- Add below code snippet.
+```
+<?php
+
+namespace Acme\Test;
+
+use PHPUnit\Framework\TestCase;
+use Acme\Http\Request;
+use Acme\Http\Response;
+use Acme\Validation\Validator;
+
+
+class ValidatorTest extends TestCase
+{
+
+    public function testGetIsValidReturnTrue()
+    {
+
+        //Create new request object
+        $request =  new Request([]);
+        //Create new response object;
+        $response = new Response($request);
+        //Create validator object
+        $validator = new Validator($request, $response);
+
+        $validator->setIsValid(true);
+
+        $this->assertTrue($validator->getIsValid());
+    }
+
+    public function testGetIsValidReturnFalse()
+    {
+
+        //Create new request object
+        $request =  new Request([]);
+        //Create new response object;
+        $response = new Response($request);
+        //Create validator object
+        $validator = new Validator($request, $response);
+
+        $validator->setIsValid(false);
+
+        $this->assertFalse($validator->getIsValid());
+    }
+}
+```
