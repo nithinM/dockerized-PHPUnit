@@ -47,4 +47,69 @@ class ValidatorTest extends TestCase
 
         $this->assertFalse($validator->getIsValid());
     }
+
+    public function testCheckForMinStringLengthWithValidData()
+    {
+
+        //Create new request object
+        $request =  new Request(['mintype' => 'yellow']);
+        //Create new response object;
+        $response = new Response($request);
+        //Create validator object
+        $validator = new Validator($request, $response);
+
+        $errors = $validator->check(['mintype' => 'min:3']);
+
+        $this->assertCount(0, $errors);
+
+    }
+
+    public function testCheckForMinStringLengthWithInvalidData()
+    {
+
+        //Create new request object
+        $request =  new Request(['mintype' => 'x']);
+        //Create new response object;
+        $response = new Response($request);
+        //Create validator object
+        $validator = new Validator($request, $response);
+
+        $errors = $validator->check(['mintype' => 'min:3']);
+
+        $this->assertCount(1, $errors);
+
+    }
+
+    public function testCheckForEmailWithValidData()
+    {
+
+        //Create new request object
+        $request =  new Request(['email' => 'nithin@test.lk']);
+        //Create new response object;
+        $response = new Response($request);
+        //Create validator object
+        $validator = new Validator($request, $response);
+
+        $errors = $validator->check(['email' => 'email']);
+
+        $this->assertCount(0, $errors);
+
+    }
+
+    public function testCheckForEmailWithInvalidData()
+    {
+
+        //Create new request object
+        $request =  new Request(['email' => 'whatever']);
+        //Create new response object;
+        $response = new Response($request);
+        //Create validator object
+        $validator = new Validator($request, $response);
+
+        $errors = $validator->check(['email' => 'email']);
+
+        $this->assertCount(1, $errors);
+
+    }
+
 }
