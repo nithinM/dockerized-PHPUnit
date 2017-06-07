@@ -18,47 +18,53 @@ use Acme\Validation\Validator;
 class ValidatorTest extends TestCase
 {
 
+    protected $request;
+    protected $response;
+    protected $validator;
+    protected $testdata;
+
+    protected function setUpRequestResponse()
+    {
+        if ( $this->testdata == null ){
+            $this->testdata = [];
+        }
+
+        //Create new request object
+        $this->request = new Request($this->testdata);
+        //Create new response object;
+        $this->response = new Response($this->request);
+        //Create validator object
+        $this->validator =  new Validator($this->request, $this->response);
+
+    }
+
     public function testGetIsValidReturnTrue()
     {
 
-        //Create new request object
-        $request =  new Request([]);
-        //Create new response object;
-        $response = new Response($request);
-        //Create validator object
-        $validator = new Validator($request, $response);
+        $this->setUpRequestResponse();
+        $this->validator->setIsValid(true);
 
-        $validator->setIsValid(true);
+        $this->assertTrue($this->validator->getIsValid());
 
-        $this->assertTrue($validator->getIsValid());
     }
 
     public function testGetIsValidReturnFalse()
     {
 
-        //Create new request object
-        $request =  new Request([]);
-        //Create new response object;
-        $response = new Response($request);
-        //Create validator object
-        $validator = new Validator($request, $response);
+        $this->setUpRequestResponse();
+        $this->validator->setIsValid(false);
 
-        $validator->setIsValid(false);
+        $this->assertFalse($this->validator->getIsValid());
 
-        $this->assertFalse($validator->getIsValid());
     }
 
     public function testCheckForMinStringLengthWithValidData()
     {
 
-        //Create new request object
-        $request =  new Request(['mintype' => 'yellow']);
-        //Create new response object;
-        $response = new Response($request);
-        //Create validator object
-        $validator = new Validator($request, $response);
+        $this->testdata = ['mintype' => 'yellow'];
+        $this->setUpRequestResponse();
 
-        $errors = $validator->check(['mintype' => 'min:3']);
+        $errors = $this->validator->check(['mintype' => 'min:3']);
 
         $this->assertCount(0, $errors);
 
@@ -67,14 +73,10 @@ class ValidatorTest extends TestCase
     public function testCheckForMinStringLengthWithInvalidData()
     {
 
-        //Create new request object
-        $request =  new Request(['mintype' => 'x']);
-        //Create new response object;
-        $response = new Response($request);
-        //Create validator object
-        $validator = new Validator($request, $response);
+        $this->testdata = ['mintype' => 'x'];
+        $this->setUpRequestResponse();
 
-        $errors = $validator->check(['mintype' => 'min:3']);
+        $errors = $this->validator->check(['mintype' => 'min:3']);
 
         $this->assertCount(1, $errors);
 
@@ -83,14 +85,10 @@ class ValidatorTest extends TestCase
     public function testCheckForEmailWithValidData()
     {
 
-        //Create new request object
-        $request =  new Request(['email' => 'nithin@test.lk']);
-        //Create new response object;
-        $response = new Response($request);
-        //Create validator object
-        $validator = new Validator($request, $response);
+        $this->testdata = ['email' => 'nithin@test.lk'];
+        $this->setUpRequestResponse();
 
-        $errors = $validator->check(['email' => 'email']);
+        $errors = $this->validator->check(['email' => 'email']);
 
         $this->assertCount(0, $errors);
 
@@ -99,14 +97,10 @@ class ValidatorTest extends TestCase
     public function testCheckForEmailWithInvalidData()
     {
 
-        //Create new request object
-        $request =  new Request(['email' => 'whatever']);
-        //Create new response object;
-        $response = new Response($request);
-        //Create validator object
-        $validator = new Validator($request, $response);
+        $this->testdata = ['email' => 'whatever'];
+        $this->setUpRequestResponse();
 
-        $errors = $validator->check(['email' => 'email']);
+        $errors = $this->validator->check(['email' => 'email']);
 
         $this->assertCount(1, $errors);
 
