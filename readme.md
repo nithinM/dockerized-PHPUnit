@@ -132,3 +132,8 @@ class ValidatorTest extends TestCase
     }
 }
 ```
+- Run PHPUnit Test
+```
+vendor/bin/phpunit
+```
+
