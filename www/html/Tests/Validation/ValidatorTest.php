@@ -106,4 +106,12 @@ class ValidatorTest extends TestCase
 
     }
 
+    public function testValidateWithInvalidateData()
+    {
+
+        $this->testdata = ['check_field' => 'x'];
+        $this->setUpRequestResponse();
+        $this->validator->validate(['check_field' => 'x'], '/register');
+
+    }
 }
