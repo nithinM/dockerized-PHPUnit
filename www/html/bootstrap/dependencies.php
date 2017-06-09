@@ -8,6 +8,7 @@
 
 use duncan3dc\Laravel\BladeInstance;
 use Kunststube\CSRFP\SignatureGenerator;
+use Acme\Http;
 
 $injector = new Auryn\Injector;
 
@@ -17,9 +18,9 @@ $injector->share($signer);
 $blade = new BladeInstance(getenv('VIEWS_DIRECTORY'), getenv('CACHE_DIRECTORY'));
 $injector->share($blade);
 
-$injector->make('Acme/Http/Request');
-$injector->make('Acme/Http/Response');
-$injector->make('Acme/Http/Session');
+$injector->make(Http\Request::class);
+$injector->make(Http\Response::class);
+$injector->make(Http\Session::class);
 
 $injector->share('Acme/Http/Request');
 $injector->share('Acme/Http/Response');
