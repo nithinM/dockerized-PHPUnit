@@ -92,11 +92,7 @@ class Validator {
         $errors = $this->check($rules);
 
         if (sizeof($errors) > 0) {
-            $this->session->put('_error', $errors);
-            $this->isValid = false;
-            $this->response->withInput();
-            $this->response->withView($url)->render();
-            exit;
+            $this->redirectToPage($url, $errors);
         } else {
             $this->isValid = true;
 
@@ -130,6 +126,19 @@ class Validator {
     {
         $results = $table::where($name, '=', $this->request->input($name))->get();
         return $results;
+    }
+
+    /**
+     * @param $url
+     * @param $errors
+     */
+    public function redirectToPage($url, $errors)
+    {
+        $this->session->put('_error', $errors);
+        $this->isValid = false;
+        $this->response->withInput();
+        $this->response->withView($url)->render();
+        exit;
     }
 
 }

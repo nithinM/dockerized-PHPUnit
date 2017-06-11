@@ -237,6 +237,41 @@ class ValidatorTest extends TestCase
 
     }
 
+    public function testValidateWithValidateData()
+    {
+
+        $validator = $this->getMockBuilder(Validator::class)
+            ->setConstructorArgs([$this->request, $this->response, $this->session])
+            ->setMethods(['check'])
+            ->getMock();
+
+        $isValid =  $validator->validate(['foo' => 'min:3'], '/register');
+
+        $this->assertTrue($isValid);
+
+
+    }
+
+    public function testValidateWithInvalidateData()
+    {
+
+        $validator = $this->getMockBuilder(Validator::class)
+            ->setConstructorArgs([$this->request, $this->response, $this->session])
+            ->setMethods(['check', 'redirectToPage'])
+            ->getMock();
+
+        $validator->expects($this->once())
+            ->method('check')
+            ->willReturn(['Some errors']);
+
+        $validator->expects($this->once())
+            ->method('redirectToPage');
+
+        $validator->validate(['foo' => 'min:1'], '/bar');
+
+    }
+
+
     /*
     public function testValidateWithInvalidateData()
     {
