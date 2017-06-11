@@ -20,9 +20,9 @@ class Validator {
     /**
      * constructor
      */
-    public function __construct(Request $request, Response $response)
+    public function __construct(Request $request, Response $response, Session $session)
     {
-        $this->session = new Session();
+        $this->session = $session;
         $this->response = $response;
         $this->request = $request;
     }
@@ -66,7 +66,7 @@ class Validator {
                     case 'unique':
                         $model = "Acme\\models\\" . $exploded[1];
                         $table = new $model;
-                        $results = $table::where($name, '=', $this->request->input($name))->get();
+                        $results = $this->getRows($table, $name);
                         foreach ($results as $item) {
                             $errors[] = $this->request->input($name) . " already exists in this system!";
                         }
@@ -119,6 +119,17 @@ class Validator {
     public function setIsValid($isValid)
     {
         $this->isValid = $isValid;
+    }
+
+    /**
+     * @param $table
+     * @param $name
+     * @return mixed
+     */
+    public function getRows($table, $name)
+    {
+        $results = $table::where($name, '=', $this->request->input($name))->get();
+        return $results;
     }
 
 }

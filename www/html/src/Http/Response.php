@@ -1,4 +1,5 @@
 <?php
+
 namespace Acme\Http;
 
 use duncan3dc\Laravel\BladeInstance;
@@ -10,7 +11,8 @@ use Acme\Http\Request;
  * Class Response
  * @package Acme\Http
  */
-class Response {
+class Response
+{
 
     protected $data;
     protected $view;
@@ -26,15 +28,15 @@ class Response {
     /**
      * Constructor
      */
-    public function __construct(Request $request, SignatureGenerator $signer)
+    public function __construct(Request $request, SignatureGenerator $signer, BladeInstance $blade, Session $session)
     {
-        $this->request = $request;
-        $this->blade = new BladeInstance(getenv('VIEWS_DIRECTORY'), getenv('CACHE_DIRECTORY'));
-        $this->response_type = 'text/html';
-        $this->signer = $signer;
+        $this->request        = $request;
+        $this->blade          = $blade;
+        $this->response_type  = 'text/html';
+        $this->signer         = $signer;
         $this->with['signer'] = $this->signer;
-        $this->session = new Session();
-        $this->with_input = false;
+        $this->session        = $session;
+        $this->with_input     = false;
     }
 
 
@@ -44,113 +46,11 @@ class Response {
     public function render()
     {
         $this->with['_session'] = $this->session;
-        $html = $this->blade->render($this->view, $this->with);
+        $html                   = $this->blade->render($this->view, $this->with);
         $this->repopulateForm($html);
 
         $this->renderOutput($html);
     }
-
-
-    /**
-     * @return $this
-     */
-    public function toJson()
-    {
-        $this->response_type = 'application/json';
-
-        return $this;
-    }
-
-
-    /**
-     * @return $this
-     */
-    public function toXml()
-    {
-        $this->response_type = 'text/xml';
-
-        return $this;
-    }
-
-
-    /**
-     * @param $view
-     * @return $this
-     */
-    public function withView($view)
-    {
-        $this->view = $view;
-
-        return $this;
-    }
-
-
-    /**
-     * @param $name
-     * @param $value
-     * @return $this
-     */
-    public function with($name, $value)
-    {
-        $this->with[$name] = $value;
-
-        return $this;
-    }
-
-
-    /**
-     * @param $code
-     * @return $this
-     */
-    public function withResponseCode($code)
-    {
-        $this->response_code = $code;
-
-        return $this;
-    }
-
-
-    /**
-     * @param $message
-     * @return $this
-     */
-    public function withError($message)
-    {
-        $this->session->put('_error', $message);
-
-        return $this;
-    }
-
-
-    /**
-     * @param $message
-     * @return $this
-     */
-    public function withMessage($message)
-    {
-        $this->session->put('_message', $message);
-
-        return $this;
-    }
-
-
-    /**
-     * @param $target
-     */
-    public function redirectTo($target)
-    {
-        header("Location: " . $target);
-    }
-
-
-    /**
-     *
-     */
-    public function withInput()
-    {
-        $this->with_input = true;
-    }
-
 
     /**
      * @param $html
@@ -160,7 +60,7 @@ class Response {
     {
         if ($this->with_input) {
             $keys = $this->request->getPost();
-            $dom = HtmlDomParser::str_get_html($html);
+            $dom  = HtmlDomParser::str_get_html($html);
 
             foreach ($keys as $name => $value) {
                 $elements = $dom->find('#' . $name);
@@ -169,8 +69,9 @@ class Response {
 
                     switch ($tag) {
                         case ("input"):
-                            if (isset($element->value))
+                            if (isset($element->value)) {
                                 $element->value = $value;
+                            }
                             break;
                         case ("textarea"):
                             $element->innertext = $value;
@@ -185,7 +86,6 @@ class Response {
 
         return $html;
     }
-
 
     /**
      * @param $payload
@@ -205,11 +105,105 @@ class Response {
         header('Content-Type: ' . $this->response_type);
         echo $payload;
 
-        if ($this->session->has('_message'))
+        if ($this->session->has('_message')) {
             $this->session->forget('_message');
+        }
 
-        if ($this->session->has('_error'))
+        if ($this->session->has('_error')) {
             $this->session->forget('_error');
+        }
+    }
+
+    /**
+     * @return $this
+     */
+    public function toJson()
+    {
+        $this->response_type = 'application/json';
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function toXml()
+    {
+        $this->response_type = 'text/xml';
+
+        return $this;
+    }
+
+    /**
+     * @param $view
+     * @return $this
+     */
+    public function withView($view)
+    {
+        $this->view = $view;
+
+        return $this;
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
+    public function with($name, $value)
+    {
+        $this->with[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param $code
+     * @return $this
+     */
+    public function withResponseCode($code)
+    {
+        $this->response_code = $code;
+
+        return $this;
+    }
+
+    /**
+     * @param $message
+     * @return $this
+     */
+    public function withError($message)
+    {
+        $this->session->put('_error', $message);
+
+        return $this;
+    }
+
+    /**
+     * @param $message
+     * @return $this
+     */
+    public function withMessage($message)
+    {
+        $this->session->put('_message', $message);
+
+        return $this;
+    }
+
+    /**
+     * @param $target
+     */
+    public function redirectTo($target)
+    {
+        header("Location: " . $target);
+    }
+
+    /**
+     *
+     */
+    public function withInput()
+    {
+        $this->with_input = true;
     }
 
 }
