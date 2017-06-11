@@ -43,18 +43,6 @@ class ValidatorTest extends TestCase
 //
 //    }
 
-    public function getRequest($input = '')
-    {
-        $req = $this->getMockBuilder(Request::class)
-            ->getMock();
-
-        $req->expects($this->once())
-            ->method('input')
-            ->willReturn($input);
-
-        return $req;
-    }
-
     public function testGetIsValidReturnTrue()
     {
 
@@ -86,6 +74,18 @@ class ValidatorTest extends TestCase
 
         $this->assertCount(0, $errors);
 
+    }
+
+    public function getRequest($input = '')
+    {
+        $req = $this->getMockBuilder(Request::class)
+            ->getMock();
+
+        $req->expects($this->once())
+            ->method('input')
+            ->willReturn($input);
+
+        return $req;
     }
 
     public function testCheckForMinStringLengthWithInvalidData()
@@ -154,7 +154,7 @@ class ValidatorTest extends TestCase
             ->willReturn('Nithin');
 
         $validator = new Validator($req, $this->response, $this->session);
-        $error = $validator->check(['first_input' => 'equalTo:second_input']);
+        $error     = $validator->check(['first_input' => 'equalTo:second_input']);
 
         $this->assertCount(0, $error);
 
@@ -175,7 +175,7 @@ class ValidatorTest extends TestCase
             ->willReturn('Manasha');
 
         $validator = new Validator($req, $this->response, $this->session);
-        $error = $validator->check(['first_input' => 'equalTo:second_input']);
+        $error     = $validator->check(['first_input' => 'equalTo:second_input']);
 
         $this->assertCount(1, $error);
 
@@ -215,28 +215,6 @@ class ValidatorTest extends TestCase
 
     }
 
-    protected function setUp()
-    {
-        $signer = $this->getMockBuilder(SignatureGenerator::class)
-            ->setConstructorArgs(['abc123'])
-            ->getMock();
-
-        $this->session = $this->getMockBuilder(Session::class)
-            ->getMock();
-
-        $this->blade = $this->getMockBuilder(BladeInstance::class)
-            ->setConstructorArgs(['view-path', 'cache-path'])
-            ->getMock();
-
-        $this->request = $this->getMockBuilder(Request::class)
-            ->getMock();
-
-        $this->response = $this->getMockBuilder(Response::class)
-            ->setConstructorArgs([$this->request, $signer, $this->blade, $this->session])
-            ->getMock();
-
-    }
-
     public function testValidateWithValidateData()
     {
 
@@ -245,7 +223,7 @@ class ValidatorTest extends TestCase
             ->setMethods(['check'])
             ->getMock();
 
-        $isValid =  $validator->validate(['foo' => 'min:3'], '/register');
+        $isValid = $validator->validate(['foo' => 'min:3'], '/register');
 
         $this->assertTrue($isValid);
 
@@ -268,6 +246,28 @@ class ValidatorTest extends TestCase
             ->method('redirectToPage');
 
         $validator->validate(['foo' => 'min:1'], '/bar');
+
+    }
+
+    protected function setUp()
+    {
+        $signer = $this->getMockBuilder(SignatureGenerator::class)
+            ->setConstructorArgs(['abc123'])
+            ->getMock();
+
+        $this->session = $this->getMockBuilder(Session::class)
+            ->getMock();
+
+        $this->blade = $this->getMockBuilder(BladeInstance::class)
+            ->setConstructorArgs(['view-path', 'cache-path'])
+            ->getMock();
+
+        $this->request = $this->getMockBuilder(Request::class)
+            ->getMock();
+
+        $this->response = $this->getMockBuilder(Response::class)
+            ->setConstructorArgs([$this->request, $signer, $this->blade, $this->session])
+            ->getMock();
 
     }
 

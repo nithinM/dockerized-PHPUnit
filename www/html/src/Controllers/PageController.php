@@ -1,4 +1,5 @@
 <?php
+
 namespace Acme\Controllers;
 
 use Acme\Models\Page;
@@ -7,7 +8,8 @@ use Acme\Models\Page;
  * Class PageController
  * @package Acme\Controllers
  */
-class PageController extends BaseControllerWithDI {
+class PageController extends BaseControllerWithDI
+{
 
     /**
      * Show the home page
@@ -28,7 +30,7 @@ class PageController extends BaseControllerWithDI {
     public function getShowPage()
     {
         // extract page name from the url
-        $uri = explode("/", $this->request->server['REQUEST_URI']);
+        $uri    = explode("/", $this->request->server['REQUEST_URI']);
         $target = $uri[1];
 
         // find matching page in the db
@@ -37,8 +39,8 @@ class PageController extends BaseControllerWithDI {
         // look up page content
         if ($page) {
             $browser_title = $page->browser_title;
-            $page_content = $page->page_content;
-            $page_id = $page->id;
+            $page_content  = $page->page_content;
+            $page_id       = $page->id;
         }
 
         if (!isset($browser_title)) {
@@ -65,6 +67,20 @@ class PageController extends BaseControllerWithDI {
             ->withError("Page not found!")
             ->withResponseCode(404)
             ->render();
+    }
+
+    /**
+     * @param $stringToSlug
+     * @param string $separator
+     * @return mixed|string
+     */
+    public function makeSlug($stringToSlug, $separator = "-")
+    {
+        $slug = iconv('UTF-8', 'ASCII//TRANSLIT', $stringToSlug);
+        $slug = preg_replace("%[^-/+|\w ]%", '', $slug);
+        $slug = strtolower(trim($slug));
+        $slug = preg_replace("/[\/_|+ -]+/", $separator, $slug);
+        return $slug;
     }
 
 }
