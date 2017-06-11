@@ -88,6 +88,9 @@ class ValidatorTest extends TestCase
         return $req;
     }
 
+    /**
+     *
+     */
     public function testCheckForMinStringLengthWithInvalidData()
     {
 
@@ -97,7 +100,11 @@ class ValidatorTest extends TestCase
 
         $errors = $validator->check(['mintype' => 'min:3']);
 
-        $this->assertCount(1, $errors);
+        $error_msg = $errors[0];
+
+        $this->assertTrue(strContains($error_msg, 'must be at least'));
+
+//        $this->assertCount(1, $errors);
 
     }
 
@@ -123,7 +130,11 @@ class ValidatorTest extends TestCase
 
         $errors = $validator->check(['email' => 'email']);
 
-        $this->assertCount(1, $errors);
+        $error_msg = $errors[0];
+
+        $this->assertTrue(strContains($error_msg, 'must be a valid email!'));
+
+//        $this->assertCount(1, $errors);
 
     }
 
@@ -175,9 +186,13 @@ class ValidatorTest extends TestCase
             ->willReturn('Manasha');
 
         $validator = new Validator($req, $this->response, $this->session);
-        $error     = $validator->check(['first_input' => 'equalTo:second_input']);
+        $errors     = $validator->check(['first_input' => 'equalTo:second_input']);
 
-        $this->assertCount(1, $error);
+        $error_msg = $errors[0];
+
+        $this->assertStringStartsWith('Value does not match verification value', $error_msg);
+
+//        $this->assertCount(1, $errors);
 
     }
 
@@ -209,9 +224,13 @@ class ValidatorTest extends TestCase
         $validator->method('getRows')
             ->willReturn(['a']);
 
-        $error = $validator->check(['my_field' => 'unique:User']);
+        $errors = $validator->check(['my_field' => 'unique:User']);
 
-        $this->assertCount(1, $error);
+        $error_msg = $errors[0];
+
+        $this->assertTrue(strContains($error_msg, 'already exists in this system!'));
+
+//        $this->assertCount(1, $errors);
 
     }
 
@@ -251,6 +270,9 @@ class ValidatorTest extends TestCase
 
     protected function setUp()
     {
+
+        include (__DIR__ . '/../../bootstrap/functions.php');
+
         $signer = $this->getMockBuilder(SignatureGenerator::class)
             ->setConstructorArgs(['abc123'])
             ->getMock();
