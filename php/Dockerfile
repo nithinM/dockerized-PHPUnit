@@ -35,6 +35,9 @@ RUN docker-php-ext-install pdo_pgsql
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
+# Install the pcntl extention
+RUN docker-php-ext-install pcntl
+
 COPY ./xdebug.ini /usr/local/etc/php/conf.d/
 
 #####################################

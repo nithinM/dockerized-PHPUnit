@@ -22,18 +22,6 @@ services:
       PHP_XDEBUG_ENABLED: 1 # Set 1 to enable.
       XDEBUG_CONFIG: remote_host=192.168.8.100
 
-#  mysql:
-#    image: mysql:latest
-#    ports:
-#       - "3307:3306"
-#    volumes:
-#      - mysql-data:/var/lib/mysql
-#    environment:
-#      MYSQL_ROOT_PASSWORD: secret
-#      MYSQL_DATABASE: acme
-#      MYSQL_USER: user
-#      MYSQL_PASSWORD: password
-
   mariadb:
       build: ./mariadb/
       ports:
@@ -46,11 +34,18 @@ services:
         MYSQL_USER: user
         MYSQL_PASSWORD: password
 
-#  mysql-data:
-#    image: mysql:latest
-#    volumes:
-#      - mysql-data:/var/lib/mysql
-#    command: "true"
+  mariadbtest:
+        build: ./mariadb/
+        ports:
+           - "3310:3306"
+        volumes:
+          - mariadb-test-data:/var/lib/mysql
+        environment:
+          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_DATABASE: laravel_db_test
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+
 
   mariadb-data:
       image: mariadb:latest
@@ -58,14 +53,26 @@ services:
         - mariadb-data:/var/lib/mysql
       command: "true"
 
+  mariadb-test-data:
+        image: mariadb:latest
+        volumes:
+          - mariadb-test-data:/var/lib/mysql
+        command: "true"
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     ports:
       - 8084:80
     links:
       - mariadb
+      - mariadbtest
+    restart: always
     environment:
-      PMA_HOST: mariadb
+      PMA_ARBITRARY: 1
+      PMA_HOSTS: mariadb,mariadbtest
+      PMA_USER: root
+      PMA_PASSWORD: secret
 
 volumes:
   mariadb-data:
+  mariadb-test-data:
