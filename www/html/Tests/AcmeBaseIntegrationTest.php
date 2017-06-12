@@ -83,4 +83,19 @@ abstract class AcmeBaseIntegrationTest extends TestCase
             "root", "secret");
         return $this->createDefaultDBConnection($db, "laravel_db_test");
     }
+
+    /**
+     * Use reflection to allow us to run protected methods
+     *
+     * @param $obj
+     * @param $method
+     * @param array $args
+     * @return mixed
+     */
+    protected function run_protected_method($obj, $method, $args = array())
+    {
+        $method = new \ReflectionMethod(get_class($obj), $method);
+        $method->setAccessible(true);
+        return $method->invokeArgs($obj, $args);
+    }
 }

@@ -138,7 +138,7 @@ class Validator {
         $this->isValid = false;
         $this->response->withInput();
         $this->response->withView($url)->render();
-        exit;
+//        exit;
     }
 
 }

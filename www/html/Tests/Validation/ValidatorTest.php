@@ -26,6 +26,7 @@ class ValidatorTest extends TestCase
     protected $validator;
     protected $session;
     protected $blade;
+    protected $signer;
 //    protected $testdata;
 
 //    protected function setUpRequestResponse()
@@ -186,7 +187,7 @@ class ValidatorTest extends TestCase
             ->willReturn('Manasha');
 
         $validator = new Validator($req, $this->response, $this->session);
-        $errors     = $validator->check(['first_input' => 'equalTo:second_input']);
+        $errors    = $validator->check(['first_input' => 'equalTo:second_input']);
 
         $error_msg = $errors[0];
 
@@ -268,12 +269,45 @@ class ValidatorTest extends TestCase
 
     }
 
+    public function testRedirectToPage()
+    {
+        // in order to run a unit test on this method and allow for an assertion,
+        // we'll mock the response class and override redirectToPage to return a true
+        $res = $this->getMockBuilder(Response::class)
+            ->setConstructorArgs([$this->request, $this->signer, $this->blade, $this->session])
+            ->setMethods(['render'])
+            ->getMock();
+
+        $res->expects($this->once())
+            ->method('render')
+            ->will($this->returnValue([true]));
+
+        $validator = new Validator($this->request, $res, $this->session);
+        $result    = $this->run_protected_method($validator, 'redirectToPage', ['/whatever', []]);
+        $this->assertNull($result);
+    }
+
+    /**
+     * Use reflection to allow us to run protected methods
+     *
+     * @param $obj
+     * @param $method
+     * @param array $args
+     * @return mixed
+     */
+    protected function run_protected_method($obj, $method, $args = array())
+    {
+        $method = new \ReflectionMethod(get_class($obj), $method);
+        $method->setAccessible(true);
+        return $method->invokeArgs($obj, $args);
+    }
+
     protected function setUp()
     {
 
-        include (__DIR__ . '/../../bootstrap/functions.php');
+        include(__DIR__ . '/../../bootstrap/functions.php');
 
-        $signer = $this->getMockBuilder(SignatureGenerator::class)
+        $this->signer = $this->getMockBuilder(SignatureGenerator::class)
             ->setConstructorArgs(['abc123'])
             ->getMock();
 
@@ -288,19 +322,9 @@ class ValidatorTest extends TestCase
             ->getMock();
 
         $this->response = $this->getMockBuilder(Response::class)
-            ->setConstructorArgs([$this->request, $signer, $this->blade, $this->session])
+            ->setConstructorArgs([$this->request, $this->signer, $this->blade, $this->session])
             ->getMock();
 
     }
 
-
-    /*
-    public function testValidateWithInvalidateData()
-    {
-
-        $this->testdata = ['check_field' => 'x'];
-        $this->setUpRequestResponse();
-        $this->validator->validate(['check_field' => 'x'], '/register');
-
-    }*/
 }
