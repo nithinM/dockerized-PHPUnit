@@ -34,6 +34,7 @@ abstract class AcmeBaseIntegrationTest extends TestCase
     protected $request;
     protected $response;
     protected $blade;
+    protected $signer;
 
 
     public function setUp()
@@ -56,7 +57,7 @@ abstract class AcmeBaseIntegrationTest extends TestCase
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
 
-        $signer   = $this->getMockBuilder(SignatureGenerator::class)
+        $this->signer   = $this->getMockBuilder(SignatureGenerator::class)
             ->setConstructorArgs(['abc123'])
             ->getMock();
         $this->session  = $this->getMockBuilder(Session::class)
@@ -67,7 +68,7 @@ abstract class AcmeBaseIntegrationTest extends TestCase
         $this->request  = $this->getMockBuilder(Request::class)
             ->getMock();
         $this->response = $this->getMockBuilder(Response::class)
-            ->setConstructorArgs([$this->request, $signer, $this->blade, $this->session])
+            ->setConstructorArgs([$this->request, $this->signer, $this->blade, $this->session])
             ->getMock();
     }
 

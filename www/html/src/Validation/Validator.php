@@ -85,6 +85,7 @@ class Validator {
 
     /**
      * @param $rules
+     * @param $url
      * @return bool
      */
     public function validate($rules, $url)
@@ -110,7 +111,7 @@ class Validator {
     }
 
     /**
-     * @param mixed $isValid
+     * @param $isValid
      */
     public function setIsValid($isValid)
     {

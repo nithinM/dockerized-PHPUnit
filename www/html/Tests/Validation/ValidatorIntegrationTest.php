@@ -14,6 +14,10 @@ use Acme\Models\User;
 use Acme\Validation\Validator;
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * Class ValidatorIntegrationTest
+ * @package Acme\Test
+ */
 class ValidatorIntegrationTest extends AcmeBaseIntegrationTest
 {
     public function testGetRows()
