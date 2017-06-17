@@ -1,6 +1,6 @@
 <?php
 use Acme\Models\Testimonial;
-use Acme\Test\AcmeBaseIntegrationTest;
+use Acme\Tests\AcmeBaseIntegrationTest;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -16,9 +16,9 @@ class TestimonialTest extends AcmeBaseIntegrationTest
     {
 
         $testimonial = Testimonial::find(1);
-        $user = $testimonial->user();
+        $user        = $testimonial->user();
 
-        $actual = get_class($user);
+        $actual   = get_class($user);
         $expected = HasOne::class;
 
         $this->assertEquals($expected, $actual);

@@ -4,6 +4,7 @@ namespace Acme\Test;
 
 use Acme\Controllers\PageController;
 use Acme\Http\Response;
+use Acme\Tests\AcmeBaseIntegrationTest;
 use PHPUnit\Framework\Assert;
 
 /**

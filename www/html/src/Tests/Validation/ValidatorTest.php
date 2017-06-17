@@ -305,7 +305,7 @@ class ValidatorTest extends TestCase
     protected function setUp()
     {
 
-        include(__DIR__ . '/../../bootstrap/functions.php');
+        include(__DIR__ . '/../../../bootstrap/functions.php');
 
         $this->signer = $this->getMockBuilder(SignatureGenerator::class)
             ->setConstructorArgs(['abc123'])

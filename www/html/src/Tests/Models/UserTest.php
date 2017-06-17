@@ -1,6 +1,6 @@
 <?php
 use Acme\Models\User;
-use Acme\Test\AcmeBaseIntegrationTest;
+use Acme\Tests\AcmeBaseIntegrationTest;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -15,10 +15,10 @@ class UserTest extends AcmeBaseIntegrationTest
     public function testGetTestimonialsForUser()
     {
 
-        $user = User::find(1);
+        $user         = User::find(1);
         $testimonials = $user->testimonials();
 
-        $actual = get_class($testimonials);
+        $actual   = get_class($testimonials);
         $expected = HasMany::class;
         $this->assertEquals($expected, $actual);
 

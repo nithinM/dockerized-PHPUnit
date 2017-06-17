@@ -7,12 +7,7 @@ use duncan3dc\Laravel\BladeInstance;
 use Kunststube\CSRFP\SignatureGenerator;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Created by PhpStorm.
- * User: nithin
- * Date: 6/11/17
- * Time: 9:20 AM
- */
+
 class PageControllerTest extends TestCase
 {
     protected $request;

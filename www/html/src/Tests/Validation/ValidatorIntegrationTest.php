@@ -11,6 +11,7 @@ namespace Acme\Test;
 
 use Acme\Http\Request;
 use Acme\Models\User;
+use Acme\Tests\AcmeBaseIntegrationTest;
 use Acme\Validation\Validator;
 use Illuminate\Database\Eloquent\Collection;
 
