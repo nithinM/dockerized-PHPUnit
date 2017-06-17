@@ -45,6 +45,7 @@ class PageController extends BaseControllerWithDI
 
         if (!isset($browser_title)) {
             $this->getShow404();
+
 //            exit();
             return true;
         }
@@ -57,6 +58,16 @@ class PageController extends BaseControllerWithDI
             ->render();
     }
 
+    /**
+     * @return mixed
+     */
+    protected function getUri()
+    {
+        $uri    = explode("/", $this->request->server['REQUEST_URI']);
+        $target = $uri[1];
+
+        return $target;
+    }
 
     /**
      * show 404 page
@@ -81,17 +92,8 @@ class PageController extends BaseControllerWithDI
         $slug = preg_replace("%[^-/+|\w ]%", '', $slug);
         $slug = strtolower(trim($slug));
         $slug = preg_replace("/[\/_|+ -]+/", $separator, $slug);
-        return $slug;
-    }
 
-    /**
-     * @return mixed
-     */
-    protected function getUri()
-    {
-        $uri    = explode("/", $this->request->server['REQUEST_URI']);
-        $target = $uri[1];
-        return $target;
+        return $slug;
     }
 
 }

@@ -12,6 +12,13 @@ use PHPUnit\Framework\Assert;
  */
 class PageControllerIntegrationTest extends AcmeBaseIntegrationTest
 {
+
+    public function setUp()
+    {
+        $_SERVER['REQUEST_URI'] = "/about-acme";
+        parent::setUp();
+    }
+
     public function testGetShowHomepage()
     {
 
@@ -125,6 +132,35 @@ class PageControllerIntegrationTest extends AcmeBaseIntegrationTest
 
     public function testGetUri()
     {
+        $response = $this->getMockBuilder(Response::class)
+            ->setConstructorArgs([$this->request, $this->signer, $this->blade, $this->session])
+            ->setMethods(['render'])
+            ->getMock();
+
+        $response->method('render')
+            ->willReturn('true');
+
+        $controller = $this->getMockBuilder(PageController::class)
+            ->setConstructorArgs([$this->request, $response, $this->session, $this->signer, $this->blade])
+            ->setMethods(null)
+            ->getMock();
+
+        $controller->getShowPage();
+
+        $expected = "About Acme";
+        $actual   = $controller->page->browser_title;
+
+        $this->assertEquals($expected, $actual);
+
+        $expected = 'generic-page';
+        $actual   = self::readAttribute($response, 'view');
+
+        $this->assertEquals($expected, $actual);
+
+        $expected = 1;
+        $actual   = $controller->page->id;
+
+        $this->assertEquals($expected, $actual);
 
     }
 }

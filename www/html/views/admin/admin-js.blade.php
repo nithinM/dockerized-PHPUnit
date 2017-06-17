@@ -14,7 +14,7 @@ function makePageEditable(item){
         var editoroptions = {
             allowedContent: true,
             floatSpaceDockedOffsetX: 150
-        }
+        };
 
         var elements = document.getElementsByClassName( 'editablecontent' );
         for ( var i = 0; i < elements.length; ++i ) {
