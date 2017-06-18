@@ -1,0 +1,5 @@
+Acceptance Test Strategy
+========================
+
+1. Verify that all links in the menu bar work as expected
+2. Click on register, and try creating an account
