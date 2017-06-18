@@ -5,5 +5,4 @@ vendor/
 .env
 phinx.yml
 coverage/
-cache
-cache/views
+cache/
