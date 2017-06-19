@@ -1,9 +1,9 @@
 {
-    "name": "tsawler/acme",
+    "name": "nithin/acme",
     "authors": [
         {
-            "name": "Trevor Sawler",
-            "email": "me@here.ca"
+            "name": "Nithin Madhuranga",
+            "email": "nithin@axis.lk"
         }
     ],
     "require": {

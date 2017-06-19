@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<database name="laravel_db">
+<database name="acme_db">
 	<table_data name="pages">
 	<row>
 		<field name="id">1</field>

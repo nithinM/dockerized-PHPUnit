@@ -35,7 +35,7 @@ abstract class AcmeBaseIntegrationTest extends TestCase
         $capsule->addConnection([
             'driver' => 'mysql',
             'host' => 'mariadbtest',
-            'database' => 'laravel_db_test',
+            'database' => 'acme_db_test',
             'username' => 'root',
             'password' => 'secret',
             'charset' => 'utf8',
@@ -65,7 +65,7 @@ abstract class AcmeBaseIntegrationTest extends TestCase
      */
     public function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(__DIR__ . "/laravel_db.xml");
+        return $this->createMySQLXMLDataSet(__DIR__ . "/acme_db.xml");
     }
 
     /**
@@ -74,9 +74,9 @@ abstract class AcmeBaseIntegrationTest extends TestCase
     public function getConnection()
     {
         $db = new PDO(
-            "mysql:host=mariadbtest;dbname=laravel_db_test",
+            "mysql:host=mariadbtest;dbname=acme_db_test",
             "root", "secret");
-        return $this->createDefaultDBConnection($db, "laravel_db_test");
+        return $this->createDefaultDBConnection($db, "acme_db_test");
     }
 
     /**

@@ -1,0 +1,62 @@
+#!/bin/sh
+
+case "$1" in
+    build)
+        echo 'Start Build or rebuild services...'
+        docker-compose build
+        ;;
+
+    start)
+        echo 'Starting containers...'
+        docker-compose up -d
+        ;;
+
+    stop)
+        echo 'Stop and remove containers, networks, images, and volumes...'
+        docker-compose down
+        ;;
+
+    stop-service)
+        echo 'Stop services...'
+        docker-compose stop
+        ;;
+
+    restart)
+        echo 'Restart services...'
+        docker-compose restart
+        ;;
+
+    run-test)
+        echo 'Run PHPUnit and Code Coverage...'
+        echo 'Execute a bash in running PHP container...'
+        docker exec -it $(docker-compose ps -q php) bash -c " echo '[Connected]' \
+                                                            && echo 'Start PHPUnit...' \
+                                                            && vendor/bin/phpunit \
+                                                            && echo '[Completed]' \
+                                                            && echo 'Start Code coverage...' \
+                                                            && vendor/bin/phpunit --coverage-html coverage \
+                                                            && echo '[Completed]' \
+                                                            && exit"
+        ;;
+
+    setup-db)
+        echo 'Start setup Dev DB and Test DB..'
+        echo 'Start Dev DB migration...'
+        docker exec -it $(docker-compose ps -q mariadb) bash -c "echo '[Connected]' \
+                                                                && echo 'Migrate Dev DB...' \
+                                                                && vendor/bin/phinx migrate -e development \
+                                                                && echo ['Completed'] \
+                                                                && exit"
+        echo 'Start Test DB migration...'
+        docker exec -it $(docker-compose ps -q mariadbtest) bash -c "echo '[Connected]' \
+                                                                        && echo 'Migrate Test DB...' \
+                                                                        && vendor/bin/phinx migrate -e testing \
+                                                                        && echo ['Completed'] \
+                                                                        && exit"
+
+
+    *)
+        echo $"Usage: $0 {build|start|stop|stop-service|restart|run-test|setup-db}"
+        exit 1
+
+esac
