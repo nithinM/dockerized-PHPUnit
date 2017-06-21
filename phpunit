@@ -53,7 +53,7 @@ case "$1" in
                                                                         && vendor/bin/phinx migrate -e testing \
                                                                         && echo ['Completed'] \
                                                                         && exit"
-
+        ;;
 
     *)
         echo $"Usage: $0 {build|start|stop|stop-service|restart|run-test|setup-db}"
